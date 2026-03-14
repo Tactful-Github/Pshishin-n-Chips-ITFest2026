@@ -20,6 +20,10 @@ public class CursorConfineToPlane : MonoBehaviour
     [Tooltip("Color of the highlight quad behind hovered objects")]
     public Color highlightColor = new Color(1f, 1f, 1f, 0.3f);
 
+    [Header("Phone plane (optional)")]
+    [Tooltip("When the phone canvas is shown, cursor can lock to this plane instead (e.g. transparent plane for phone screen). Assign the plane's Transform. Call SwitchToPhonePlane() when canvas shows and SwitchToPrimaryPlane() to revert.")]
+    public Transform secondaryPlane;
+
     private Vector3 _clampedWorldPos;
     private bool _hasClampedPos;
     private Bounds _meshBounds;
@@ -29,9 +33,13 @@ public class CursorConfineToPlane : MonoBehaviour
     private Material _highlightMat;
     private GameObject _selectedIcon;
     private GameObject _hoveredIcon;
+    private bool _useSecondaryPlane;
+    private Bounds _secondaryBounds;
 
     void Start()
     {
+        _useSecondaryPlane = false;
+
         if (cam == null) cam = Camera.main;
 
         if (cursorTexture == null)
@@ -43,8 +51,42 @@ public class CursorConfineToPlane : MonoBehaviour
         else
             _meshBounds = new Bounds(Vector3.zero, Vector3.one);
 
+        if (secondaryPlane != null)
+        {
+            var secMf = secondaryPlane.GetComponent<MeshFilter>();
+            if (secMf != null && secMf.sharedMesh != null)
+                _secondaryBounds = secMf.sharedMesh.bounds;
+            else
+                _secondaryBounds = new Bounds(Vector3.zero, Vector3.one);
+        }
+
         CreateCursorQuad();
         CreateHighlightQuad();
+    }
+
+    /// <summary>Switch cursor confinement to the secondary (phone screen) plane. Call when the phone canvas is shown.</summary>
+    public void SwitchToPhonePlane()
+    {
+        _useSecondaryPlane = true;
+    }
+
+    /// <summary>Switch cursor confinement back to the primary (desktop) plane.</summary>
+    public void SwitchToPrimaryPlane()
+    {
+        _useSecondaryPlane = false;
+    }
+
+    /// <summary>True when the cursor is confined to the phone (secondary) plane. Use this to only allow scrolling when the mouse is trapped on the phone screen.</summary>
+    public bool IsUsingPhonePlane => _useSecondaryPlane && secondaryPlane != null;
+
+    Transform GetActivePlaneTransform()
+    {
+        return (_useSecondaryPlane && secondaryPlane != null) ? secondaryPlane : transform;
+    }
+
+    Bounds GetActivePlaneBounds()
+    {
+        return (_useSecondaryPlane && secondaryPlane != null) ? _secondaryBounds : _meshBounds;
     }
 
     void CreateCursorQuad()
@@ -79,7 +121,10 @@ public class CursorConfineToPlane : MonoBehaviour
     {
         if (cam == null || _cursorObj == null) return;
 
-        Plane plane = new Plane(transform.up, transform.position);
+        Transform activePlane = GetActivePlaneTransform();
+        Bounds activeBounds = GetActivePlaneBounds();
+
+        Plane plane = new Plane(activePlane.up, activePlane.position);
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
         if (!plane.Raycast(ray, out float enter))
@@ -92,15 +137,15 @@ public class CursorConfineToPlane : MonoBehaviour
 
         Vector3 hitWorld = ray.GetPoint(enter);
 
-        Vector3 local = transform.InverseTransformPoint(hitWorld);
-        local.x = Mathf.Clamp(local.x, _meshBounds.min.x, _meshBounds.max.x);
-        local.y = Mathf.Clamp(local.y, _meshBounds.min.y, _meshBounds.max.y);
-        local.z = Mathf.Clamp(local.z, _meshBounds.min.z, _meshBounds.max.z);
+        Vector3 local = activePlane.InverseTransformPoint(hitWorld);
+        local.x = Mathf.Clamp(local.x, activeBounds.min.x, activeBounds.max.x);
+        local.y = Mathf.Clamp(local.y, activeBounds.min.y, activeBounds.max.y);
+        local.z = Mathf.Clamp(local.z, activeBounds.min.z, activeBounds.max.z);
 
-        _clampedWorldPos = transform.TransformPoint(local);
+        _clampedWorldPos = activePlane.TransformPoint(local);
 
-        _cursorObj.transform.position = _clampedWorldPos + transform.up * 0.01f;
-        _cursorObj.transform.rotation = Quaternion.LookRotation(-transform.up, transform.forward);
+        _cursorObj.transform.position = _clampedWorldPos + activePlane.up * 0.01f;
+        _cursorObj.transform.rotation = Quaternion.LookRotation(-activePlane.up, activePlane.forward);
         _cursorObj.transform.localScale = new Vector3(cursorWorldSize, cursorWorldSize, cursorWorldSize);
         _cursorObj.SetActive(true);
         _hasClampedPos = true;
@@ -115,8 +160,9 @@ public class CursorConfineToPlane : MonoBehaviour
 
     GameObject FindIconUnderCursor()
     {
-        Vector3 origin = _clampedWorldPos + transform.up * 50f;
-        Ray ray = new Ray(origin, -transform.up);
+        Transform activePlane = GetActivePlaneTransform();
+        Vector3 origin = _clampedWorldPos + activePlane.up * 50f;
+        Ray ray = new Ray(origin, -activePlane.up);
 
         RaycastHit[] hits = Physics.RaycastAll(ray, 100f, hoverLayerMask);
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
