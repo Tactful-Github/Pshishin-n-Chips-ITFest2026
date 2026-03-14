@@ -227,8 +227,8 @@ Transform:
   m_GameObject: {fileID: 79865450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.2, y: 0.1, z: 0.02}
-  m_LocalScale: {x: 0.672, y: 1, z: 1.3}
+  m_LocalPosition: {x: -0.8, y: 0.1, z: 0.02}
+  m_LocalScale: {x: 0.66, y: 1, z: 1.29}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -246,8 +246,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorConfineToPlane
   cam: {fileID: 0}
-  cursorTexture: {fileID: 0}
-  customCursorSize: {x: 16, y: 16}
+  cursorTexture: {fileID: 2800000, guid: 235a96f7b2b223146bc357ab452e49d9, type: 3}
+  cursorClickTexture: {fileID: 2800000, guid: 2fa89e072d626e34a99caf58db6e2e51, type: 3}
+  cursorWorldSize: 1
 --- !u!1 &1270126062
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,7 +483,7 @@ Transform:
   m_GameObject: {fileID: 1309206325}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.39229006, y: 0.05, z: 0.015000087}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0}
   m_LocalScale: {x: 1.77, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -548,7 +549,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 29
+  field of view: 29.5
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -575,7 +576,7 @@ Transform:
   m_GameObject: {fileID: 1654552891}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -0.28638515, y: 45.980724, z: -0.31273612}
+  m_LocalPosition: {x: 0, y: 19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
