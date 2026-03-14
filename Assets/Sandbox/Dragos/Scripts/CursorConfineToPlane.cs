@@ -155,10 +155,7 @@ public class CursorConfineToPlane : MonoBehaviour
             }
         }
 
-        if (_selectedIcon != null && !_selectedIcon.activeInHierarchy)
-            _selectedIcon = null;
-
-        GameObject target = _selectedIcon != null ? _selectedIcon : _hoveredIcon;
+        GameObject target = _hoveredIcon;
 
         if (target != null)
         {

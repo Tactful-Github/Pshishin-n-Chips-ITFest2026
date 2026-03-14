@@ -5,13 +5,10 @@ public class Phone_Script : MonoBehaviour
 
      public GameObject phonePanel;
 
-     bool isOpen = false;
-
      public void TogglePhone()
      {
-        isOpen = !isOpen;
-        phonePanel.SetActive(isOpen);
-        gameObject.SetActive(!isOpen);
+        phonePanel.SetActive(true);
+        gameObject.SetActive(false);
      }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
