@@ -10,6 +10,10 @@ public class DesktopIcon : MonoBehaviour
 
     private float _lastClickTime = -1f;
 
+    public AudioSource audioSrc;
+    public AudioClip iconOpenSound;
+
+
     void Start()
     {
         if (targetObject != null)
@@ -23,7 +27,11 @@ public class DesktopIcon : MonoBehaviour
         if (now - _lastClickTime <= doubleClickTime)
         {
             if (targetObject != null)
+            {
                 targetObject.SetActive(true);
+                audioSrc.PlayOneShot(iconOpenSound);
+            }
+                
 
             _lastClickTime = -1f;
             return;

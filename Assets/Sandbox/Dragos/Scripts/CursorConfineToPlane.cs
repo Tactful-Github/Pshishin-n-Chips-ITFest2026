@@ -14,6 +14,10 @@ public class CursorConfineToPlane : MonoBehaviour
     [Tooltip("Size of the cursor in world units")]
     public float cursorWorldSize = 0.5f;
 
+    [Header("Sound")]
+    public AudioSource sfxSource;   
+    public AudioClip clickSound;
+
     [Header("Hover Highlight")]
     [Tooltip("Layer mask for objects that can be highlighted on hover")]
     public LayerMask hoverLayerMask = ~0;
@@ -188,6 +192,13 @@ public class CursorConfineToPlane : MonoBehaviour
         {
             _selectedIcon = _hoveredIcon;
 
+
+            // --- ADD YOUR SOUND HERE ---
+            if (sfxSource != null && clickSound != null)
+             {
+                sfxSource.PlayOneShot(clickSound);
+                }
+
             if (_hoveredIcon != null)
             {
                 var icon = _hoveredIcon.GetComponent<DesktopIcon>();
@@ -198,6 +209,12 @@ public class CursorConfineToPlane : MonoBehaviour
 
                 var clickToShow = _hoveredIcon.GetComponent<ClickToShow>();
                 if (clickToShow != null) clickToShow.OnCursorClick();
+
+                var sceneTransition = _hoveredIcon.GetComponent<SceneTransitionOnClick>();
+                if (sceneTransition != null) sceneTransition.OnCursorClick();
+
+                var quitGame = _hoveredIcon.GetComponent<QuitGameOnClick>();
+                if (quitGame != null) quitGame.OnCursorClick();
             }
         }
 
@@ -244,7 +261,9 @@ public class CursorConfineToPlane : MonoBehaviour
     {
         return obj.GetComponent<DesktopIcon>() != null
             || obj.GetComponent<CloseButton>() != null
-            || obj.GetComponent<ClickToShow>() != null;
+            || obj.GetComponent<ClickToShow>() != null
+            || obj.GetComponent<SceneTransitionOnClick>() != null
+            || obj.GetComponent<QuitGameOnClick>() != null;
     }
 
     public Vector3 GetClampedMouseWorldPosition() => _clampedWorldPos;
