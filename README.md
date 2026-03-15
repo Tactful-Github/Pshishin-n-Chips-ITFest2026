@@ -28,9 +28,11 @@ Can you stop the virus from spreading through the office before your boss finds 
 
 
 ## Learning Path [so far]
-- Phishing
-- Web
-- Crypto
+- Phishing: Identifying malicious links
+
+- Web Security: Understanding cookies and session manipulation
+
+- Cryptography: Decoding messages using ROT13 and hashing
 
 
 
