@@ -1,7 +1,7 @@
 # Pshishin' Quest
 This project was made for ITFest 2026.
 
-Phishin' Quest is an application that allows its users to learn the basis of cybersecurity through gamified lessons.
+Phishin' Quest is an application that allows its users to learn the basics of cybersecurity through gamified lessons.
 
 
 ## Context
